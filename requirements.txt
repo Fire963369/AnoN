@@ -1,0 +1,14 @@
+# Flask and essential extensions
+Flask>=2.0 # Pin to a specific major version or higher
+Flask-SQLAlchemy>=2.5
+Flask-Login>=0.5
+Werkzeug>=2.0 # Often a dependency, but good to list
+Click>=8.0 # For Flask CLI commands
+
+# WSGI Server for Production
+gunicorn>=20.0
+
+# Database Driver for PostgreSQL (Render's default)
+psycopg2-binary>=2.9
+
+# Add any other specific dependencies your project uses
