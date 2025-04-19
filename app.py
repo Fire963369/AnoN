@@ -226,26 +226,21 @@ def index():
                                  </a>'''
 
         # Generate HTML for the post itself, including reply form and replies
-        posts_html_list.append(f'''
-            <div class="mb-6 p-5 bg-card dark:bg-card rounded-lg border border-border shadow-sm">
-                <div class="text-sm text-muted-foreground mb-3">
-                    @{html.escape(post.author.username)} - {post.date.strftime("%d.%m.%Y %H:%M")} (ID: {post.id})
-                    {delete_link_html} 
-                </div>
-                <div class="text-card-foreground dark:text-card-foreground mb-4 whitespace-pre-wrap">{html.escape(post.content)}</div>
-
-                {''.join([f'''<form method="POST" action="{url_for('reply', post_id=post.id)}" class="mt-4">
-                    <textarea name="content" required placeholder="Ваш ответ..."
-                              class="w-full p-2 border border-input rounded-md h-24 bg-background dark:bg-input text-foreground dark:text-foreground focus:ring-2 focus:ring-ring focus:border-transparent outline-none resize-none text-sm"></textarea>
-                    <button type="submit"
-                            class="mt-2 px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90">
-                        Ответить
-                    </button>
-                </form>''' if current_user.is_authenticated else '<p class="mt-4 text-sm text-muted-foreground"><a href="/login" class="text-blue-600 dark:text-blue-400 hover:underline">Войдите</a>, чтобы ответить.</p>'])}
-
-                {replies_html if post.replies else ''}
-            </div>
-        ''')
+        # Форма ответа (только для авторизованных)
+        reply_form = ''
+        if current_user.is_authenticated:
+            reply_form = f'''
+            <form method="POST" action="{url_for('reply', post_id=post.id)}" class="mt-4">
+                <textarea name="content" required placeholder="Ваш ответ..."
+                        class="w-full p-2 border border-input rounded-md h-24 bg-background dark:bg-input text-foreground dark:text-foreground focus:ring-2 focus:ring-ring focus:border-transparent outline-none resize-none text-sm"></textarea>
+                <button type="submit"
+                        class="mt-2 px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90">
+                    Ответить
+                </button>
+            </form>
+            '''
+        else:
+            reply_form = '<p class="mt-4 text-sm text-muted-foreground"><a href="/login" class="text-blue-600 dark:text-blue-400 hover:underline">Войдите</a>, чтобы ответить.</p>'
 
     # Combine all post HTML strings
     all_posts_html = ''.join(posts_html_list) if posts_html_list else '<p class="text-center text-muted-foreground">Пока нет сообщений.</p>'
